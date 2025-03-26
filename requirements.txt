@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+httpx
+beautifulsoup4
+Jinja2
+python-multipart
