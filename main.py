@@ -31,11 +31,13 @@ async def get_wikipedia_outline(request: Request, country: str):
 
         soup = BeautifulSoup(response.content, 'html.parser')
 
+        # Get all heading tags in the order they appear in the HTML
+        headings = soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
         markdown_outline = ""
-        for heading_tag in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
-            for heading in soup.find_all(heading_tag):
-                level = int(heading_tag[1])
-                markdown_outline += "#" * level + " " + heading.text.strip() + "\n"
+        for heading in headings:
+            # Extract the level from the tag name (e.g., "h2" -> level 2)
+            level = int(heading.name[1])
+            markdown_outline += "#" * level + " " + heading.get_text(strip=True) + "\n"
 
         return templates.TemplateResponse("outline.html", {"request": request, "markdown_outline": markdown_outline})
 
